@@ -71,31 +71,30 @@ export type LoggerOptions = {
   anonymizer?: Anonymizer;
 };
 
-export const configureLogger = (
-  app: INestApplication,
-  options?: LoggerOptions,
-) => {
-  const { anonymizer = new SimpleAnonymizer(), silent = false } = options || {};
-  const configService = app.get(ConfigService);
-  contextService = app.get(ContextService);
+export const configureLogger =
+  (options?: LoggerOptions) => (app: INestApplication) => {
+    const { anonymizer = new SimpleAnonymizer(), silent = false } =
+      options || {};
+    const configService = app.get(ConfigService);
+    contextService = app.get(ContextService);
 
-  const [env, appName, logLevel] = [
-    configService.get('NODE_ENV', 'production'),
-    configService.get('APP_NAME', 'nest-app'),
-    configService.get('LOG_LEVEL', 'info'),
-  ];
-  const useLocalFormat = ['development', 'testing'].includes(env);
-  const loggerConfig: WinstonModuleOptions = {
-    silent,
-    levels: config.npm.levels,
-    level: logLevel,
-    format: useLocalFormat
-      ? localFormat(appName, anonymizer)
-      : remoteFormat(anonymizer),
-    transports: [new Console()],
+    const [env, appName, logLevel] = [
+      configService.get('NODE_ENV', 'production'),
+      configService.get('APP_NAME', 'nest-app'),
+      configService.get('LOG_LEVEL', 'info'),
+    ];
+    const useLocalFormat = ['development', 'testing'].includes(env);
+    const loggerConfig: WinstonModuleOptions = {
+      silent,
+      levels: config.npm.levels,
+      level: logLevel,
+      format: useLocalFormat
+        ? localFormat(appName, anonymizer)
+        : remoteFormat(anonymizer),
+      transports: [new Console()],
+    };
+    const logger = WinstonModule.createLogger(loggerConfig);
+    app.useLogger(logger);
+    Logger.log('Logger initialized', '@gedai/logger');
+    return app;
   };
-  const logger = WinstonModule.createLogger(loggerConfig);
-  app.useLogger(logger);
-  Logger.log('Logger initialized', '@gedai/logger');
-  return app;
-};
