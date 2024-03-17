@@ -8,4 +8,5 @@ export * from './common/cors.config';
 export * from './common/helmet.config';
 export * from './common/outbound-http-tracing.config';
 export * from './common/route-prefix.config';
+export * from './common/validation.config';
 export * from './common/versioning.config';

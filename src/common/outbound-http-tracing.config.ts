@@ -23,9 +23,9 @@ function mountInterceptor(
   }
 }
 
-export function configureOutboundHttpTracing(app: INestApplication) {
+export const configureOutboundHttpTracing = () => (app: INestApplication) => {
   for (const module of [http, https]) {
     mountInterceptor(app, module);
   }
   return app;
-}
+};

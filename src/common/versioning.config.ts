@@ -1,7 +1,13 @@
-import { INestApplication, Logger, VersioningType } from '@nestjs/common';
+import {
+  INestApplication,
+  Logger,
+  VersioningOptions,
+  VersioningType,
+} from '@nestjs/common';
 
-export const configureVersioning = (app: INestApplication) => {
-  app.enableVersioning({ type: VersioningType.URI });
-  Logger.log('API Versioning initialized', 'Configuration');
-  return app;
-};
+export const configureVersioning =
+  (options?: VersioningOptions) => (app: INestApplication) => {
+    app.enableVersioning(options ?? { type: VersioningType.URI });
+    Logger.log('API Versioning initialized', 'Configuration');
+    return app;
+  };

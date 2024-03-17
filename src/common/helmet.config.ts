@@ -1,8 +1,9 @@
 import { INestApplication, Logger } from '@nestjs/common';
-import helmet from 'helmet';
+import helmet, { HelmetOptions } from 'helmet';
 
-export const configureHelmet = (app: INestApplication) => {
-  app.use(helmet());
-  Logger.log('Server security initialized', 'Configuration');
-  return app;
-};
+export const configureHelmet =
+  (options?: Readonly<HelmetOptions>) => (app: INestApplication) => {
+    app.use(helmet(options));
+    Logger.log('Server security initialized', 'Configuration');
+    return app;
+  };
