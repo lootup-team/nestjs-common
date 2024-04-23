@@ -16,6 +16,6 @@ export const configureValidation =
         },
       ),
     );
-    Logger.log('Validation initialized', 'Configuration');
+    Logger.log('Validation initialized', '@gedai/common/config');
     return app;
   };

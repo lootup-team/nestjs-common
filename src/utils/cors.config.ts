@@ -8,6 +8,6 @@ export const configureCORS =
   (options?: CorsOptions | CorsOptionsDelegate<any>) =>
   (app: INestApplication) => {
     app.enableCors(options);
-    Logger.log('CORS initialized', 'Configuration');
+    Logger.log('CORS initialized', '@gedai/common/config');
     return app;
   };

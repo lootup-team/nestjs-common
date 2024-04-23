@@ -7,8 +7,8 @@ import {
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
-class LogHttpMiddleware implements NestMiddleware {
-  private logger = new Logger(this.constructor.name);
+class HttpInspectorInboundMiddleware implements NestMiddleware {
+  private logger = new Logger('InboundHTTPInspection');
 
   private getLogLevel(res: Response) {
     const statusCode = res.statusCode;
@@ -23,6 +23,7 @@ class LogHttpMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: NextFunction) {
     let responseBody = null;
+    const requestStartTimestamp = Date.now();
     const originalSend = res.send;
     res.send = (body) => {
       if (!responseBody) {
@@ -42,9 +43,11 @@ class LogHttpMiddleware implements NestMiddleware {
     };
 
     res.on('finish', () => {
+      const executionTimeMillis = `${Date.now() - requestStartTimestamp}ms`;
       const logLevel = this.getLogLevel(res);
       this.logger[logLevel]({
-        message: 'REQUEST AUDIT',
+        message: `${req.method} ${req.originalUrl} ${res.statusCode}`,
+        executionTime: executionTimeMillis,
         request: {
           method: req.method,
           url: req.originalUrl,
@@ -65,8 +68,13 @@ class LogHttpMiddleware implements NestMiddleware {
   }
 }
 
-export const configureLogHttpMiddleware = (app: INestApplication) => {
-  const logger = new LogHttpMiddleware();
-  app.use(logger.use.bind(logger));
+export const configureHttpInspectorInbound = (app: INestApplication) => {
+  const inspector = new HttpInspectorInboundMiddleware();
+  const middleware = inspector.use.bind(inspector);
+  Object.defineProperty(middleware, 'name', {
+    value: HttpInspectorInboundMiddleware.name,
+  });
+  app.use(middleware);
+  Logger.log('Inbound http inspection initialized', '@gedai/common/config');
   return app;
 };

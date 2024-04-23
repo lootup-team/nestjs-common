@@ -44,7 +44,8 @@ class LogExceptionFilter
       this.log(exception);
     } finally {
       /** TODO: Might need improvement for graphql */
-      if (host.getType() === 'http') {
+      const contextType = host.getType();
+      if (contextType === 'http') {
         super.catch(exception, host);
       }
     }
