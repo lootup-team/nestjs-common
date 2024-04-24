@@ -1,4 +1,7 @@
 export * from './logger/anonymizer';
+export * from './logger/http-inspector-inbound.middleware';
+export * from './logger/http-inspector-outbound.interceptor';
+export * from './logger/log-exception.filter';
 export * from './logger/logger.config';
 
 export * from './utils/compression.config';

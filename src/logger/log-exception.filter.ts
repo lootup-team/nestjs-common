@@ -52,8 +52,9 @@ class LogExceptionFilter
   }
 }
 
-export const configureExceptionLogger = (app: INestApplication) => {
+export const configureExceptionLogger = () => (app: INestApplication) => {
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new LogExceptionFilter(httpAdapter));
+  Logger.log('Log exceptions handler initialized', '@gedai/common/config');
   return app;
 };

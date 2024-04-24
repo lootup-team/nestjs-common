@@ -8,9 +8,6 @@ import {
 } from 'nest-winston';
 import { config, format, transports } from 'winston';
 import { Anonymizer, RegExpAnonymizer } from './anonymizer';
-import { configureHttpInspectorInbound } from './http-inspector-inbound.middleware';
-import { configureHttpInspectorOutbound } from './http-inspector-outbound.interceptor';
-import { configureExceptionLogger } from './log-exception.filter';
 
 let contextService: ContextService;
 let anonymizer: Anonymizer;
@@ -118,7 +115,6 @@ export const configureLogger =
     const _env = configService.get('NODE_ENV', 'production');
     const appName = configService.get('SERVICE_NAME', 'nest-app');
     const logLevel = configService.get('LOG_LEVEL', 'info');
-    const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
     const logFormat = configService.get('LOG_FORMAT', 'json');
     const usePrettyFormat = logFormat === 'pretty';
 
@@ -133,13 +129,6 @@ export const configureLogger =
     };
     const logger = WinstonModule.createLogger(loggerConfig);
     app.useLogger(logger);
-    configureExceptionLogger(app);
-    if (['all', 'inbound'].includes(httpInspection)) {
-      configureHttpInspectorInbound(app);
-    }
-    if (['all', 'outbound'].includes(httpInspection)) {
-      configureHttpInspectorOutbound(app);
-    }
-    Logger.log('Logger initialized', '@gedai/common');
+    Logger.log('Logger initialized', '@gedai/common/config');
     return app;
   };

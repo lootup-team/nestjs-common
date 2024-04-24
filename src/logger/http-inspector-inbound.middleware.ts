@@ -4,6 +4,7 @@ import {
   Logger,
   NestMiddleware,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
@@ -68,9 +69,16 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
   }
 }
 
-export const configureHttpInspectorInbound = (app: INestApplication) => {
+export const configureHttpInspectorInbound = () => (app: INestApplication) => {
+  const configService = app.get(ConfigService);
+  const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
+  if (!['all', 'inbound'].includes(httpInspection)) {
+    return;
+  }
+
   const inspector = new HttpInspectorInboundMiddleware();
   const middleware = inspector.use.bind(inspector);
+
   Object.defineProperty(middleware, 'name', {
     value: HttpInspectorInboundMiddleware.name,
   });
