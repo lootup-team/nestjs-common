@@ -60,15 +60,20 @@ const treatError = format(({ stack: _stack, ...info }) => {
   }
 
   const { error } = info;
-  const res = error.response;
-
+  const { response: res, innerException } = error;
   const response = res
     ? { response: { status: res.status, data: res.data } }
     : {};
+  const exception = innerException ? { innerException } : {};
 
   return {
     ...info,
-    error: { message: error.message, stack: error.stack, ...response },
+    error: {
+      message: error.message,
+      stack: error.stack,
+      ...response,
+      ...exception,
+    },
   };
 });
 

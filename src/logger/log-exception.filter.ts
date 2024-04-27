@@ -25,17 +25,14 @@ class LogExceptionFilter
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
     const log = {
       message: exception.message ?? 'Internal Server error',
       error: exception,
     };
-
     if (statusCode < HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.debug(log);
       return;
     }
-
     this.logger.error(log);
   }
 
@@ -43,11 +40,7 @@ class LogExceptionFilter
     try {
       this.log(exception);
     } finally {
-      /** TODO: Might need improvement for graphql */
-      const contextType = host.getType();
-      if (contextType === 'http') {
-        super.catch(exception, host);
-      }
+      super.catch(exception, host);
     }
   }
 }
