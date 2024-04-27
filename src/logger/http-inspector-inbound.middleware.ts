@@ -73,7 +73,7 @@ export const configureHttpInspectorInbound = () => (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
   if (!['all', 'inbound'].includes(httpInspection)) {
-    return;
+    return app;
   }
 
   const inspector = new HttpInspectorInboundMiddleware();

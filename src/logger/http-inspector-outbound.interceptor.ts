@@ -77,7 +77,7 @@ export const configureHttpInspectorOutbound = () => (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
   if (!['all', 'outbound'].includes(httpInspection)) {
-    return;
+    return app;
   }
 
   const logger = new Logger('OutboundHTTPInspection');
