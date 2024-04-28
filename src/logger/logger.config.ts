@@ -1,4 +1,4 @@
-import { Context, ContextService } from '@gedai/core';
+import { Context, ContextService } from '@gedai/nestjs-core';
 import { INestApplication, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {

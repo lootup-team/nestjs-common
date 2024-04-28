@@ -1,6 +1,6 @@
 ## Description
 
-Opionated common configuration for NestJS services. This package depends on @gedai/core and @nestjs/config. Be sure to install and setup those for everything to work as expected.
+Opionated common configuration for NestJS services. This package depends on @gedai/nestjs-core and @nestjs/config. Be sure to install and setup those for everything to work as expected.
 
 ## Configuration:
 
@@ -22,7 +22,7 @@ INSPECT_HTTP_TRAFFIC="{all,none,inbound,outbound}"
 ### Step 1: Installation
 
 ```bash
-$ npm install @gedai/core @gedai/common @nestjs/config
+$ npm install @gedai/nestjs-core @gedai/common @nestjs/config
 ```
 
 ### Step 2: The Setup
@@ -31,7 +31,7 @@ Import the required modules
 
 ```typescript
 // app.module.ts
-import { ContextModule } from '@gedai/core';
+import { ContextModule } from '@gedai/nestjs-core';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { randomUUID } from 'crypto';
@@ -55,7 +55,7 @@ Apply global wide configuration in main.ts
 
 ```typescript
 // app.module.ts
-import { configureContextWrappers } from '@gedai/core';
+import { configureContextWrappers } from '@gedai/nestjs-core';
 import { configureLogger } from '@gedai/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -77,7 +77,7 @@ You can now use the Nest's default logger with preconfigured setup.
 
 ```typescript
 // app.service.ts
-import { ContextService } from '@gedai/core';
+import { ContextService } from '@gedai/nestjs-core';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
