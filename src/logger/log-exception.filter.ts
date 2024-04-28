@@ -40,7 +40,10 @@ class LogExceptionFilter
     try {
       this.log(exception);
     } finally {
-      super.catch(exception, host);
+      const executionType = host.getType();
+      if (['http', 'graphql'].includes(executionType)) {
+        super.catch(exception, host);
+      }
     }
   }
 }
