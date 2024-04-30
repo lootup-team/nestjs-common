@@ -75,7 +75,7 @@ function mountInterceptor(logger: Logger, module: typeof http | typeof https) {
 
 export const configureHttpInspectorOutbound = () => (app: INestApplication) => {
   const configService = app.get(ConfigService);
-  const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
+  const httpInspection = configService.get('TRAFFIC_INSPECTION_HTTP', 'none');
   if (!['all', 'outbound'].includes(httpInspection)) {
     return app;
   }

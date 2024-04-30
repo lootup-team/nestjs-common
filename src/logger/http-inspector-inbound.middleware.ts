@@ -89,11 +89,14 @@ type InspectionOptions = {
 export const configureHttpInspectorInbound =
   (opts?: InspectionOptions) => (app: INestApplication) => {
     const { ignoreRoutes } = opts || {};
-  const configService = app.get(ConfigService);
-  const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
-  if (!['all', 'inbound'].includes(httpInspection)) {
-    return app;
-  }
+    const configService = app.get(ConfigService);
+    const httpInspection = configService.get(
+      'TRAFFIC_INSPECTION_HTTP',
+      'inbound',
+    );
+    if (!['all', 'inbound'].includes(httpInspection)) {
+      return app;
+    }
 
     if (ignoreRoutes) {
       Logger.log(
@@ -108,12 +111,12 @@ export const configureHttpInspectorInbound =
     const inspector = new HttpInspectorInboundMiddleware(
       ignoreRoutes.map((x) => new RegExp(`^${x.replace('*', '.*')}$`, 'gi')),
     );
-  const middleware = inspector.use.bind(inspector);
+    const middleware = inspector.use.bind(inspector);
 
-  Object.defineProperty(middleware, 'name', {
-    value: HttpInspectorInboundMiddleware.name,
-  });
-  app.use(middleware);
-  Logger.log('Inbound http inspection initialized', '@gedai/common/config');
-  return app;
-};
+    Object.defineProperty(middleware, 'name', {
+      value: HttpInspectorInboundMiddleware.name,
+    });
+    app.use(middleware);
+    Logger.log('Inbound http inspection initialized', '@gedai/common/config');
+    return app;
+  };
