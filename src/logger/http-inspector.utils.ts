@@ -52,6 +52,7 @@ export function logResponse(
     ...getErrorIfNeeded(),
     request: {
       method: req.method,
+      baseURL: req.host,
       url,
       query,
       headers: requestHeaders,

@@ -60,7 +60,10 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
         message: `[HTTP] [INBOUND] [${req.method}] [${req.path}] [${res.statusCode}] [${executionTimeMillis}]`,
         executionTime: executionTimeMillis,
         request: {
+          ip: req.ip,
           method: req.method,
+          path: req.path,
+          baseURL: `${req.protocol}://${req.get('host')}`,
           url: req.originalUrl,
           headers: req.headers,
           body: req.body,
