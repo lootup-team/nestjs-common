@@ -22,7 +22,7 @@ INSPECT_HTTP_TRAFFIC="{all,none,inbound,outbound}"
 ### Step 1: Installation
 
 ```bash
-$ npm install @gedai/nestjs-core @gedai/common @nestjs/config
+$ npm install @gedai/nestjs-core @gedai/nestjs-common @nestjs/config
 ```
 
 ### Step 2: The Setup
@@ -56,7 +56,7 @@ Apply global wide configuration in main.ts
 ```typescript
 // app.module.ts
 import { configureContextWrappers } from '@gedai/nestjs-core';
-import { configureLogger } from '@gedai/common';
+import { configureLogger } from '@gedai/nestjs-common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
