@@ -48,7 +48,7 @@ export function logResponse(
   const query = parseSearchString(searchString);
   const requestHeaders = req.getHeaders();
   logger[logMethod]({
-    message: `${req.method} ${url} ${status}`,
+    message: `[HTTP] [OUTBOUND] [${req.method}] [${url}] [${status}]`,
     ...getErrorIfNeeded(),
     request: {
       method: req.method,
@@ -75,7 +75,7 @@ export function logRequestError(
   const [url, searchString] = req.path.split('?');
   const headers = req.getHeaders();
   logger.warn({
-    message: `${req.method} ${url} ${error.message}`,
+    message: `[HTTP] [OUTBOUND] [${req.method}] [${url}] [${error.message}]`,
     error,
     request: {
       method: req.method,

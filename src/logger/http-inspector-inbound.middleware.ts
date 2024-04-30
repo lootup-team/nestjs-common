@@ -57,7 +57,7 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
       const executionTimeMillis = `${Date.now() - requestStartTimestamp}ms`;
       const logLevel = this.getLogLevel(res);
       this.logger[logLevel]({
-        message: `${req.method} ${req.originalUrl} ${res.statusCode}`,
+        message: `[HTTP] [INBOUND] [${req.method}] [${req.path}] [${res.statusCode}] [${executionTimeMillis}]`,
         executionTime: executionTimeMillis,
         request: {
           method: req.method,
