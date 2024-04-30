@@ -11,6 +11,8 @@ import { NextFunction, Request, Response } from 'express';
 class HttpInspectorInboundMiddleware implements NestMiddleware {
   private logger = new Logger('InboundHTTPInspection');
 
+  constructor(private readonly ignoredRoutes: RegExp[]) {}
+
   private getLogLevel(res: Response) {
     const statusCode = res.statusCode;
     if (statusCode >= 500) {
@@ -22,7 +24,15 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
     return 'log';
   }
 
+  private shouldIgnoreRoute(req: Request) {
+    return this.ignoredRoutes.some((x) => x.test(req.path));
+  }
+
   use(req: Request, res: Response, next: NextFunction) {
+    if (this.shouldIgnoreRoute(req)) {
+      return next();
+    }
+
     let responseBody = null;
     const requestStartTimestamp = Date.now();
     const originalSend = res.send;
@@ -69,14 +79,32 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
   }
 }
 
-export const configureHttpInspectorInbound = () => (app: INestApplication) => {
+type InspectionOptions = {
+  ignoreRoutes: string[];
+};
+
+export const configureHttpInspectorInbound =
+  (opts?: InspectionOptions) => (app: INestApplication) => {
+    const { ignoreRoutes } = opts || {};
   const configService = app.get(ConfigService);
   const httpInspection = configService.get('INSPECT_HTTP_TRAFFIC', 'all');
   if (!['all', 'inbound'].includes(httpInspection)) {
     return app;
   }
 
-  const inspector = new HttpInspectorInboundMiddleware();
+    if (ignoreRoutes) {
+      Logger.log(
+        {
+          message: 'HTTP Inspection is set to ignore routes',
+          routes: ignoreRoutes,
+        },
+        '@gedai/common/config',
+      );
+    }
+
+    const inspector = new HttpInspectorInboundMiddleware(
+      ignoreRoutes.map((x) => new RegExp(`^${x.replace('*', '.*')}$`, 'gi')),
+    );
   const middleware = inspector.use.bind(inspector);
 
   Object.defineProperty(middleware, 'name', {
