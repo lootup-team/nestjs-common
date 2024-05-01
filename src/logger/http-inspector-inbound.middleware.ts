@@ -25,7 +25,7 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
   }
 
   private shouldIgnoreRoute(req: Request) {
-    return this.ignoredRoutes.some((x) => x.test(req.path));
+    return this.ignoredRoutes.some((x) => x.test(req.path.trim()));
   }
 
   use(req: Request, res: Response, next: NextFunction) {
@@ -83,12 +83,28 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
 }
 
 type InspectionOptions = {
-  ignoreRoutes: string[];
+  ignoreRoutes?: string[];
 };
 
+/**
+ * Configures a globally bound middleware to inspect inbound http traffic.
+ * @param {InspectionOptions} opts - configuration object specifying:
+ *
+ * - `ignoreRoutes` - a list of `request.path` routes to ignore
+ *
+ * ### Ignored Routes
+ * #### Wildcards:
+ * - \* matches N tokens in the `request.path`
+ * #### Examples:
+ * - '/v1/accounts/\*\/holder'
+ * - - hides '/v1/accounts/:id/holder' from inspection
+ * - '/v1/accounts/*'
+ * - - Hides nested route inside '/v1/accounts' from inspection
+ *
+ */
 export const configureHttpInspectorInbound =
   (opts?: InspectionOptions) => (app: INestApplication) => {
-    const { ignoreRoutes } = opts || {};
+    const { ignoreRoutes = [] } = opts || {};
     const configService = app.get(ConfigService);
     const httpInspection = configService.get(
       'TRAFFIC_INSPECTION_HTTP',
@@ -109,7 +125,7 @@ export const configureHttpInspectorInbound =
     }
 
     const inspector = new HttpInspectorInboundMiddleware(
-      ignoreRoutes.map((x) => new RegExp(`^${x.replace('*', '.*')}$`, 'gi')),
+      ignoreRoutes.map((x) => new RegExp(`^${x.replace('*', '.+')}$`, 'i')),
     );
     const middleware = inspector.use.bind(inspector);
 
