@@ -54,24 +54,18 @@ const service = () =>
   })();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const treatError = format(({ stack: _stack, ...info }) => {
-  if (!info.error) {
+const treatError = format(({ stack: _stack, error, ...info }) => {
+  if (!error) {
     return info;
   }
 
-  const { error } = info;
-  const { response: res, innerException } = error;
-  const response = res
-    ? { response: { status: res.status, data: res.data } }
-    : {};
+  const { innerException } = error;
   const exception = innerException ? { innerException } : {};
-
   return {
     ...info,
     error: {
       message: error.message,
       stack: error.stack,
-      ...response,
       ...exception,
     },
   };
