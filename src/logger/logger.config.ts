@@ -30,6 +30,7 @@ const commonSensitiveKeys = [
   /access.*token/i,
   /client.*secret/i,
   /.*api.*key/i,
+  /.*card.*number/i,
 ];
 
 let extraSensitiveKeys: (string | RegExp)[];
