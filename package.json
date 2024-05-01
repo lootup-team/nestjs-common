@@ -30,6 +30,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
+  "dependencies": {
+    "@nestjs/microservices": "^10.3.8",
+    "axios": "^1.6.8"
+  },
   "peerDependencies": {
     "@gedai/nestjs-core": "^0.0.2",
     "@nestjs/common": "^10.0.0",
