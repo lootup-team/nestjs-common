@@ -10,7 +10,7 @@ This package utilizes several environment variables for configuration purposes. 
 - `SERVICE_NAME`: Defines the name of the service, typically used for identification purposes.
 - `LOG_LEVEL`: Sets the logging level and can be assigned one of the following values: `debug`, `verbose`,`info`, `warn`, `error`.
 - `LOG_FORMAT`: Specifies the format of the logs and supports either `pretty` or `json` formats.
-- `INSPECT_HTTP_TRAFFIC`: Determines the HTTP traffic inspection mode and supports the values `all`, `none`, `inbound`, or `outbound`.
+- `TRAFFIC_INSPECTION_HTTP`: Determines the HTTP traffic inspection mode and supports the values `all`, `none`, `inbound`, or `outbound`.
 
 ## Getting Started
 
