@@ -70,7 +70,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, { bufferLogs: true })
     // Configure Context Wrappers
     .then(configureContextWrappers())
     // Configure Logger
@@ -110,8 +110,6 @@ import { Injectable, Logger } from '@nestjs/common';
 export class AppService {
   private logger = new Logger(this.constructor.name);
 
-  constructor(private readonly context: ContextService) {}
-
   getHello(): string {
     this.logger.log('Hello, Jack!');
     return 'Hello, Jack!';
@@ -121,7 +119,7 @@ export class AppService {
 
 ## Logger Interface and Error Handling
 
-The logger is configured to seamlessly detect and parse error objects, simplifying the process of handling exceptions within your codebase. When an exception occurs and you need to manage it manually, you can effortlessly pass the error object down to the logger for efficient tracking and debugging. Additionally, the logger gracefully handles unhandled exceptions, ensuring comprehensive error monitoring throughout your application.
+The logger is configured to seamlessly detect and parse error objects, simplifying the process of handling exceptions within your codebase. When an exception occurs and you need to manage it manually, you can effortlessly pass the error object down to the logger for efficient tracking and debugging. Additionally, the logger gracefully handles `unhandled exceptions`, ensuring comprehensive error monitoring throughout your application.
 
 ```typescript
 try {
@@ -136,7 +134,7 @@ catch(error) {
 
 ## Anonymizing Logs
 
-This library comes equipped with a built-in anonymizer designed to obfuscate sensitive keys in logs automatically. Should you require additional keys to be anonymized, or if you prefer to implement a custom anonymizer, you can easily extend the functionality by providing your own anonymizer or keys to the `configureLogger` handler.
+This library comes equipped with a built-in `anonymizer` designed to obfuscate sensitive keys in logs automatically. Should you require additional keys to be obfuscated, or if you prefer to implement a custom `anonymizer`, you can easily extend the functionality by providing your own `anonymizer` or keys to the `configureLogger` handler.
 
 By leveraging this feature, you can safeguard sensitive information within your logs, ensuring compliance with privacy regulations and bolstering the security of your application's logging system.
 
@@ -146,13 +144,13 @@ Configuring specific routes to be excluded from inbound inspection is particular
 
 ### Wildcard usage:
 
-- `*` matches any number of tokens in the request.path
+- `*` matches any number of tokens in the `request.path`
 
 ### Examples:
 
-- '/v1/accounts/\*/holder'
+- `/v1/accounts/\*/holder`
 - - Hides routes like /v1/accounts/:id/holder from inspection.
-- '/v1/accounts/\*'
+- `/v1/accounts/\*`
 - - Conceals nested routes within /v1/accounts from inspection.
 
 ## Available Features
