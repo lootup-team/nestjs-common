@@ -1,7 +1,7 @@
 {
   "name": "@gedai/nestjs-common",
-  "version": "0.0.4",
-  "description": "Common configuration package for Gedai opionated use of NestJS",
+  "version": "0.0.5",
+  "description": "Common components for gedai project",
   "author": "gm50x",
   "private": false,
   "publishConfig": {
