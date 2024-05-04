@@ -1,16 +1,6 @@
 ## Description
 
-This package serves as a fundamental configuration utility for NestJS services, providing essential settings and dependencies to streamline development processes. It relies on two key dependencies: @gedai/nestjs-core and @nestjs/config. To ensure smooth operation, it's imperative to install and configure these dependencies alongside this package.
-
-## Configuration Variables and Values:
-
-This package utilizes several environment variables for configuration purposes. Below is a list of available configuration variables along with their respective acceptable values:
-
-- `NODE_ENV`: Specifies the environment mode and can be set to one of the following: `development`, `testing`, `staging`, `production`.
-- `SERVICE_NAME`: Defines the name of the service, typically used for identification purposes.
-- `LOG_LEVEL`: Sets the logging level and can be assigned one of the following values: `debug`, `verbose`,`info`, `warn`, `error`.
-- `LOG_FORMAT`: Specifies the format of the logs and supports either `pretty` or `json` formats.
-- `TRAFFIC_INSPECTION_HTTP`: Determines the HTTP traffic inspection mode and supports the values `all`, `none`, `inbound`, or `outbound`.
+This package serves as a fundamental configuration utility for NestJS services, providing essential settings and dependencies to streamline development processes. It relies on `@gedai/nestjs-core` as a key dependency for keeping track of contexts. To ensure smooth operation, it's imperative to install and configure this dependency to ensure smooth operation.
 
 ## Getting Started
 
@@ -19,7 +9,7 @@ This package utilizes several environment variables for configuration purposes. 
 Install the necessary packages with your favorite Package Manager.
 
 ```bash
-$ npm install @gedai/nestjs-core @nestjs/config
+$ npm install @gedai/nestjs-core
 ```
 
 ### Step 2: Configuration Setup
@@ -28,18 +18,29 @@ In your `app.module.ts` file, import the required modules and configure them:
 
 ```typescript
 // app.module.ts
+import { CommonModule } from '@gedai/nestjs-common';
 import { ContextModule } from '@gedai/nestjs-core';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
   imports: [
-    // Set up Config Module
-    ConfigModule.forRoot({ isGlobal: true }),
     // Set up Context Module
     ContextModule.forRoot({}),
+    // Set up Common Module to provide configuration
+    CommonModule.forRoot({
+      appName: 'gedai-app',
+      environment: 'development',
+      logger: {
+        level: 'debug',
+        format: 'pretty',
+        obfuscation: { sensitiveKeys: ['cardnumber'] },
+      },
+      httpTrafficInspection: {
+        ignoreRoutes: ['/v1/hidden-paths/*', '/v1/health'],
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -49,15 +50,27 @@ export class AppModule {}
 
 ### Step 3: Application Wide Configuration
 
-In your `main.ts` file, configure the application with various common settings:
+In your `main.ts` file, configure the application with the unified configuration handler or manually setting various common settings:
 
 ```typescript
-// main.ts
+// main.ts using the unified handler
+import { createNestApp } from '@gedai/nestjs-common';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await createNestApp(AppModule);
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+```typescript
+// main.ts manually
 import { configureContextWrappers } from '@gedai/nestjs-core';
 import {
   configureCORS,
   configureCompression,
-  configureExceptionLogger,
+  configureExceptionHandler,
   configureHelmet,
   configureHttpInspectorInbound,
   configureHttpInspectorOutbound,
@@ -72,25 +85,21 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true })
     // Configure Context Wrappers
-    .then(configureContextWrappers())
+    .then(configureContextWrappers)
     // Configure Logger
-    .then(configureLogger())
-    // Configure Exception Log Handler
-    .then(configureExceptionLogger())
+    .then(configureLogger)
+    // Configure Exception Handler
+    .then(configureExceptionHandler)
     // Configure Traffic Inspection
-    .then(
-      configureHttpInspectorInbound({
-        ignoreRoutes: ['/v1/hidden-paths/*', '/v1/health'],
-      }),
-    )
-    .then(configureHttpInspectorOutbound())
+    .then(configureHttpInspectorInbound)
+    .then(configureHttpInspectorOutbound)
     // Other Common Configuration
-    .then(configureCORS())
-    .then(configureHelmet())
-    .then(configureCompression())
-    .then(configureValidation())
-    .then(configureVersioning())
-    .then(configureRoutePrefix());
+    .then(configureCORS)
+    .then(configureHelmet)
+    .then(configureCompression)
+    .then(configureValidation)
+    .then(configureVersioning)
+    .then(configureRoutePrefix);
 
   await app.listen(3000);
 }
@@ -132,15 +141,15 @@ catch(error) {
 
 # Extra Configuration
 
-## Anonymizing Logs
+## Obfuscating Logs
 
-This library comes equipped with a built-in `anonymizer` designed to obfuscate sensitive keys in logs automatically. Should you require additional keys to be obfuscated, or if you prefer to implement a custom `anonymizer`, you can easily extend the functionality by providing your own `anonymizer` or keys to the `configureLogger` handler.
+This library comes equipped with a built-in `obfuscator` designed to obfuscate any sensitive keys detected in logs automatically. Should you require additional keys to be obfuscated, or if you prefer to implement a custom `obfuscator`, you can easily extend the functionality by providing your own `obfuscator` or keys to the `CommonModule`.
 
 By leveraging this feature, you can safeguard sensitive information within your logs, ensuring compliance with privacy regulations and bolstering the security of your application's logging system.
 
-## Ignoring Routes for Inspection
+## Ignoring Routes from Inspection
 
-Configuring specific routes to be excluded from inbound inspection is particularly useful for health checks or heavy endpoints. Wildcards are supported in the configurations, allowing for flexible route matching.
+Configuring specific routes to be excluded from inspection is particularly useful for health checks or heavy endpoints. Wildcards are supported in the configurations, allowing for flexible route matching.
 
 ### Wildcard usage:
 
