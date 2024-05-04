@@ -1,13 +1,11 @@
-import {
-  INestApplication,
-  Logger,
-  VersioningOptions,
-  VersioningType,
-} from '@nestjs/common';
+import { INestApplication, Logger, VersioningType } from '@nestjs/common';
+import { MODULE_OPTIONS_TOKEN } from '../common.builder';
+import { CommonModuleOptions } from '../common.options';
 
-export const configureVersioning =
-  (options?: VersioningOptions) => (app: INestApplication) => {
-    app.enableVersioning(options ?? { type: VersioningType.URI });
-    Logger.log('API Versioning initialized', '@gedai/common/config');
-    return app;
-  };
+export const configureVersioning = (app: INestApplication) => {
+  const options = app.get<CommonModuleOptions>(MODULE_OPTIONS_TOKEN);
+
+  app.enableVersioning(options.versioning ?? { type: VersioningType.URI });
+  Logger.log('API Versioning initialized', '@gedai/common/config');
+  return app;
+};

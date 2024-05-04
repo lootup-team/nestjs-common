@@ -1,16 +1,17 @@
 import { Context, ContextService } from '@gedai/nestjs-core';
 import { INestApplication, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   WinstonModule,
   WinstonModuleOptions,
   utilities as nestWinstonUtils,
 } from 'nest-winston';
 import { config, format, transports } from 'winston';
-import { Anonymizer, RegExpAnonymizer } from './anonymizer';
+import { MODULE_OPTIONS_TOKEN } from '../common.builder';
+import { CommonModuleOptions } from '../common.options';
+import { Obfuscator, RegExpObfuscator } from './obfuscator';
 
 let contextService: ContextService;
-let anonymizer: Anonymizer;
+let anonymizer: Obfuscator;
 let env: string;
 let serviceName: string;
 
@@ -37,11 +38,11 @@ let extraSensitiveKeys: (string | RegExp)[];
 
 const sensitive = () =>
   format((info) => {
-    const anonymized = anonymizer.maskFields(info, [
+    const obfuscated = anonymizer.obfuscate(info, [
       ...(extraSensitiveKeys ?? []),
       ...commonSensitiveKeys,
     ]);
-    return anonymized;
+    return obfuscated;
   })();
 
 const environment = () =>
@@ -94,41 +95,42 @@ const prettyFormat = () =>
     nestLike(serviceName),
   );
 
-export type LoggerOptions = {
-  silent?: boolean;
-  anonymizer?: Anonymizer;
-  anonymizeKeys?: (string | RegExp)[];
-};
+export const configureLogger = (app: INestApplication) => {
+  const options = app.get<CommonModuleOptions>(MODULE_OPTIONS_TOKEN);
+  const {
+    appName = 'unknown-app',
+    environment = 'production',
+    logger: loggerConfig = {},
+  } = options;
 
-export const configureLogger =
-  (options?: LoggerOptions) => (app: INestApplication) => {
-    const {
-      anonymizer: _anonymizer = new RegExpAnonymizer(),
-      silent = false,
-      anonymizeKeys,
-    } = options || {};
-    const configService = app.get(ConfigService);
-    contextService = app.get(ContextService);
-    extraSensitiveKeys = anonymizeKeys;
-    anonymizer = _anonymizer;
+  const {
+    format = 'json',
+    level = 'info',
+    silent = false,
+    obfuscation = {},
+  } = loggerConfig;
 
-    const _env = configService.get('NODE_ENV', 'production');
-    const appName = configService.get('SERVICE_NAME', 'nest-app');
-    const logLevel = configService.get('LOG_LEVEL', 'info');
-    const logFormat = configService.get('LOG_FORMAT', 'json');
-    const usePrettyFormat = logFormat === 'pretty';
+  const {
+    sensitiveKeys: anonymizeKeys = [],
+    obfuscator: _anonymizer = new RegExpObfuscator(),
+  } = obfuscation;
 
-    env = _env;
-    serviceName = appName;
-    const loggerConfig: WinstonModuleOptions = {
-      silent,
-      levels: config.npm.levels,
-      level: logLevel,
-      format: usePrettyFormat ? prettyFormat() : jsonFormat(),
-      transports: [new Console()],
-    };
-    const logger = WinstonModule.createLogger(loggerConfig);
-    app.useLogger(logger);
-    Logger.log('Logger initialized', '@gedai/common/config');
-    return app;
+  contextService = app.get(ContextService);
+  extraSensitiveKeys = anonymizeKeys;
+  anonymizer = _anonymizer;
+  const usePrettyFormat = format === 'pretty';
+
+  env = environment;
+  serviceName = appName;
+  const winstonConfig: WinstonModuleOptions = {
+    silent,
+    levels: config.npm.levels,
+    level,
+    format: usePrettyFormat ? prettyFormat() : jsonFormat(),
+    transports: [new Console()],
   };
+  const logger = WinstonModule.createLogger(winstonConfig);
+  app.useLogger(logger);
+  Logger.log('Logger initialized', '@gedai/common/config');
+  return app;
+};

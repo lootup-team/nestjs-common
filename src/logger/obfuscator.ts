@@ -1,14 +1,14 @@
-export interface Anonymizer {
-  maskFields<T extends object>(obj: T, fields: (string | RegExp)[]): T;
+export interface Obfuscator {
+  obfuscate<T extends object>(obj: T, fields: (string | RegExp)[]): T;
 }
 
-export class RegExpAnonymizer implements Anonymizer {
-  maskFields<T extends object>(obj: T, fields: (string | RegExp)[]): T {
+export class RegExpObfuscator implements Obfuscator {
+  obfuscate<T extends object>(obj: T, fields: (string | RegExp)[]): T {
     const fieldsToMask = fields.map((x) =>
       typeof x === 'string' ? new RegExp(x.toLowerCase(), 'i') : x,
     );
     const clone = this.createClone(obj);
-    const result = this.applyMaskToFields(clone, fieldsToMask);
+    const result = this.obfuscateFields(clone, fieldsToMask);
     return result;
   }
 
@@ -17,13 +17,13 @@ export class RegExpAnonymizer implements Anonymizer {
     return { ...obj, ...properties };
   }
 
-  private applyMaskToFields(obj: any, fields: RegExp[]) {
+  private obfuscateFields(obj: any, fields: RegExp[]) {
     if (typeof obj !== 'object' || obj === null) {
       return obj;
     }
 
     if (Array.isArray(obj)) {
-      return obj.map((item) => this.applyMaskToFields(item, fields));
+      return obj.map((item) => this.obfuscateFields(item, fields));
     }
 
     for (const key in obj) {
@@ -31,7 +31,7 @@ export class RegExpAnonymizer implements Anonymizer {
         if (fields.some((x) => x.test(key))) {
           obj[key] = '*****';
         } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-          obj[key] = this.applyMaskToFields(obj[key], fields);
+          obj[key] = this.obfuscateFields(obj[key], fields);
         }
       }
     }
@@ -40,8 +40,8 @@ export class RegExpAnonymizer implements Anonymizer {
   }
 }
 
-export class NestedPropertiesAnonymizer implements Anonymizer {
-  maskFields<T extends object>(obj: T, fields: string[]): T {
+export class NestedPropertiesAnonymizer implements Obfuscator {
+  obfuscate<T extends object>(obj: T, fields: string[]): T {
     const clone = this.createClone(obj);
     const result = this.applyMaskToFields(clone, fields);
     return result;
