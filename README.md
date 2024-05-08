@@ -18,7 +18,7 @@ In your `app.module.ts` file, import the required modules and configure them:
 
 ```typescript
 // app.module.ts
-import { CommonModule } from '@gedai/nestjs-common';
+import { CommonConfigModule } from '@gedai/nestjs-common';
 import { ContextModule } from '@gedai/nestjs-core';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -29,7 +29,7 @@ import { AppService } from './app.service';
     // Set up Context Module
     ContextModule.forRoot({}),
     // Set up Common Module to provide configuration
-    CommonModule.forRoot({
+    CommonConfigModule.forRoot({
       appName: 'gedai-app',
       environment: 'development',
       logger: {
@@ -50,7 +50,7 @@ export class AppModule {}
 
 ### Step 3: Application Wide Configuration
 
-In your `main.ts` file, configure the application with the unified configuration handler or manually setting various common settings:
+In your `main.ts` file, configure the application with the unified configuration handler:
 
 ```typescript
 // main.ts using the unified handler
@@ -63,6 +63,8 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+
+Or, if you prefer, manually setting various common settings:
 
 ```typescript
 // main.ts manually
@@ -141,9 +143,11 @@ catch(error) {
 
 # Extra Configuration
 
+Settings can be configured by passing configuration objects to `CommonConfigModule`
+
 ## Obfuscating Logs
 
-This library comes equipped with a built-in `obfuscator` designed to obfuscate any sensitive keys detected in logs automatically. Should you require additional keys to be obfuscated, or if you prefer to implement a custom `obfuscator`, you can easily extend the functionality by providing your own `obfuscator` or keys to the `CommonModule`.
+This library comes equipped with a built-in `obfuscator` designed to obfuscate any sensitive keys detected in logs automatically. Should you require additional keys to be obfuscated, or if you prefer to implement a custom `obfuscator`, you can easily extend the functionality by providing your own `obfuscator` or keys to the `CommonConfigModule`.
 
 By leveraging this feature, you can safeguard sensitive information within your logs, ensuring compliance with privacy regulations and bolstering the security of your application's logging system.
 
