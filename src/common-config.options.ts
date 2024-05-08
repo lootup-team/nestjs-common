@@ -24,21 +24,25 @@ export type HttpTrafficInspectionOptions = {
   ignoreRoutes?: string[];
 };
 
-export type CORSOption = CorsOptions | CorsOptionsDelegate<any>;
+export type CORSOptions = CorsOptions | CorsOptionsDelegate<any>;
 
-export type CommonModuleOptions = {
+export type CompressionOptions = compression.CompressionOptions;
+
+export type CommonConfigModuleOptions = {
   appName?: string;
   environment?: string;
   httpTrafficInspection?: HttpTrafficInspectionOptions;
   logger?: LoggerOptions;
-  cors?: CORSOption;
+  cors?: CORSOptions;
   helmet?: Readonly<HelmetOptions>;
-  compression?: compression.CompressionOptions;
+  compression?: CompressionOptions;
   validationPipe?: ValidationPipeOptions;
   versioning?: VersioningOptions;
   routePrefix?: string;
 };
 
-export interface CommonOptionsFactory {
-  createOptions(): CommonModuleOptions | Promise<CommonModuleOptions>;
+export interface CommonConfigOptionsFactory {
+  createOptions():
+    | CommonConfigModuleOptions
+    | Promise<CommonConfigModuleOptions>;
 }

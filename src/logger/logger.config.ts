@@ -6,8 +6,8 @@ import {
   utilities as nestWinstonUtils,
 } from 'nest-winston';
 import { config, format, transports } from 'winston';
-import { MODULE_OPTIONS_TOKEN } from '../common.builder';
-import { CommonModuleOptions } from '../common.options';
+import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
+import { CommonConfigModuleOptions } from '../common-config.options';
 import { Obfuscator, RegExpObfuscator } from './obfuscator';
 
 let contextService: ContextService;
@@ -96,7 +96,7 @@ const prettyFormat = () =>
   );
 
 export const configureLogger = (app: INestApplication) => {
-  const options = app.get<CommonModuleOptions>(MODULE_OPTIONS_TOKEN);
+  const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   const {
     appName = 'unknown-app',
     environment = 'production',

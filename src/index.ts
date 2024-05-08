@@ -1,6 +1,6 @@
-export * from './common.factory';
-export * from './common.module';
-export * from './common.options';
+export * from './common-config.factory';
+export * from './common-config.module';
+export * from './common-config.options';
 
 export * from './logger/exception.handler';
 export * from './logger/http-inspector-inbound.middleware';

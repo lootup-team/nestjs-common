@@ -5,8 +5,8 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { MODULE_OPTIONS_TOKEN } from '../common.builder';
-import { CommonModuleOptions } from '../common.options';
+import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
+import { CommonConfigModuleOptions } from '../common-config.options';
 
 @Injectable()
 class HttpInspectorInboundMiddleware implements NestMiddleware {
@@ -84,7 +84,7 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
 }
 
 export const configureHttpInspectorInbound = (app: INestApplication) => {
-  const options = app.get<CommonModuleOptions>(MODULE_OPTIONS_TOKEN);
+  const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   const { ignoreRoutes = [], mode = 'inbound' } =
     options.httpTrafficInspection ?? {};
   if (!['all', 'inbound'].includes(mode)) {

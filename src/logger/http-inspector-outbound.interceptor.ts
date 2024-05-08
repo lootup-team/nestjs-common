@@ -1,8 +1,8 @@
 import { INestApplication, Logger } from '@nestjs/common';
 import * as http from 'http';
 import * as https from 'https';
-import { MODULE_OPTIONS_TOKEN } from '../common.builder';
-import { CommonModuleOptions } from '../common.options';
+import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
+import { CommonConfigModuleOptions } from '../common-config.options';
 import { logRequestError, logResponse } from './http-inspector.utils';
 
 const handleResponse =
@@ -75,7 +75,7 @@ function mountInterceptor(logger: Logger, module: typeof http | typeof https) {
 }
 
 export const configureHttpInspectorOutbound = (app: INestApplication) => {
-  const options = app.get<CommonModuleOptions>(MODULE_OPTIONS_TOKEN);
+  const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   // TODO: add ignore routes
   const { mode } = options.httpTrafficInspection ?? {};
   if (!['all', 'outbound'].includes(mode)) {
