@@ -32,7 +32,9 @@
   },
   "dependencies": {
     "@nestjs/microservices": "^10.3.8",
-    "axios": "^1.6.8"
+    "axios": "^1.6.8",
+    "nest-winston": "^1.9.4",
+    "winston": "^3.13.0"
   },
   "peerDependencies": {
     "@gedai/nestjs-core": "^0.0.5",
@@ -43,10 +45,8 @@
     "class-validator": "^0.14.1",
     "compression": "^1.7.4",
     "helmet": "^7.1.0",
-    "nest-winston": "^1.9.4",
     "reflect-metadata": "^0.1.13 || ^0.2.0",
-    "rxjs": "^7.8.1",
-    "winston": "^3.13.0"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
