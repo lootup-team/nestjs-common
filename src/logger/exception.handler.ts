@@ -43,7 +43,7 @@ class CustomExceptionHandler implements NestInterceptor {
 
   private handleHTTPException(rawError: any): HttpException {
     const body = this.getBody(rawError);
-    body.trace = this.contextService.getId();
+    body.trace = this.contextService.getCorrelationId();
     const exception = new HttpException(body, body.statusCode);
     exception.stack = rawError.stack;
     const logLevel =

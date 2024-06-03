@@ -178,6 +178,7 @@ Configuring specific routes to be excluded from inspection is particularly usefu
 - CORS
 - API Versioning
 - Route Prefixing
+- Traced Metadata in logs
 
 ## License
 

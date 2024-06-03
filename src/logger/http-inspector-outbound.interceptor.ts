@@ -85,6 +85,9 @@ export const configureHttpInspectorOutbound = (app: INestApplication) => {
   for (const module of [http, https]) {
     mountInterceptor(logger, module);
   }
-  logger.log('Outbound http inspection initialized', '@gedai/common/config');
+  logger.log(
+    'Experimental outbound http inspection initialized',
+    '@gedai/common/config',
+  );
   return app;
 };
