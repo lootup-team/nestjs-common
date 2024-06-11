@@ -3,7 +3,11 @@ import * as http from 'http';
 import * as https from 'https';
 import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
 import { CommonConfigModuleOptions } from '../common-config.options';
-import { logRequestError, logResponse } from './http-inspector.utils';
+import {
+  logRequestError,
+  logResponse,
+  routeToRegex,
+} from './http-inspector.utils';
 
 const handleResponse =
   (
@@ -31,11 +35,27 @@ const withTrafficInspection = (
     | typeof https.request
     | typeof http.get
     | typeof https.get,
+  allowedOutboundRoutes: RegExp[],
 ) =>
   function (...args: any[]) {
     const [urlOrOptions, callbackOrOptions, maybeCallback] = args;
     const requestDataChunks = [];
     const callback = maybeCallback || callbackOrOptions;
+
+    const shouldIgnoreRoute = () => {
+      return !allowedOutboundRoutes.some((x) =>
+        x.test(
+          typeof urlOrOptions === 'string'
+            ? new URL(urlOrOptions).pathname.trim()
+            : urlOrOptions.path.trim(),
+        ),
+      );
+    };
+
+    if (shouldIgnoreRoute()) {
+      return target.apply(this, args);
+    }
+
     const wrappedCallback = () =>
       handleResponse(logger, requestDataChunks, callback);
     let request: http.ClientRequest;
@@ -60,12 +80,20 @@ const withTrafficInspection = (
     return request;
   };
 
-function mountInterceptor(logger: Logger, module: typeof http | typeof https) {
+function mountInterceptor(
+  logger: Logger,
+  module: typeof http | typeof https,
+  allowedOutboundRoutes: RegExp[],
+) {
   for (const { target, name } of [
     { target: module.get, name: 'get' },
     { target: module.request, name: 'request' },
   ]) {
-    const inspectedTarget = withTrafficInspection(logger, target);
+    const inspectedTarget = withTrafficInspection(
+      logger,
+      target,
+      allowedOutboundRoutes,
+    );
     Object.defineProperty(inspectedTarget, 'name', {
       value: name,
       writable: false,
@@ -77,17 +105,23 @@ function mountInterceptor(logger: Logger, module: typeof http | typeof https) {
 export const configureHttpInspectorOutbound = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   // TODO: add ignore routes
-  const { mode } = options.httpTrafficInspection ?? {};
+  const { mode, allowedOutboundRoutes } = options.httpTrafficInspection ?? {};
   if (!['all', 'outbound'].includes(mode)) {
     return app;
   }
   const logger = new Logger('OutboundHTTPInspection');
   for (const module of [http, https]) {
-    mountInterceptor(logger, module);
+    mountInterceptor(logger, module, allowedOutboundRoutes.map(routeToRegex));
   }
-  logger.log(
-    'Experimental outbound http inspection initialized',
-    '@gedai/common/config',
-  );
+  logger.log('Outbound http inspection initialized', '@gedai/common/config');
+  if (allowedOutboundRoutes) {
+    Logger.log(
+      {
+        message: 'Outbound HTTP Inspection is set to inspect routes',
+        routes: allowedOutboundRoutes,
+      },
+      '@gedai/common/config',
+    );
+  }
   return app;
 };

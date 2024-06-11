@@ -1,4 +1,4 @@
 import { Reflector } from '@nestjs/core';
 
-export const TracedMetadata =
+export const LoggedMetadata =
   Reflector.createDecorator<{ name: string; value: string }[]>();

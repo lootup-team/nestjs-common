@@ -7,6 +7,7 @@ import {
 import { NextFunction, Request, Response } from 'express';
 import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
 import { CommonConfigModuleOptions } from '../common-config.options';
+import { routeToRegex } from './http-inspector.utils';
 
 @Injectable()
 class HttpInspectorInboundMiddleware implements NestMiddleware {
@@ -85,7 +86,7 @@ class HttpInspectorInboundMiddleware implements NestMiddleware {
 
 export const configureHttpInspectorInbound = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
-  const { ignoreRoutes = [], mode = 'inbound' } =
+  const { ignoredInboundRoutes: ignoreRoutes = [], mode = 'inbound' } =
     options.httpTrafficInspection ?? {};
   if (!['all', 'inbound'].includes(mode)) {
     return app;
@@ -94,7 +95,7 @@ export const configureHttpInspectorInbound = (app: INestApplication) => {
   if (ignoreRoutes) {
     Logger.log(
       {
-        message: 'HTTP Inspection is set to ignore routes',
+        message: 'Inbound HTTP Inspection is set to ignore routes',
         routes: ignoreRoutes,
       },
       '@gedai/common/config',
@@ -102,7 +103,7 @@ export const configureHttpInspectorInbound = (app: INestApplication) => {
   }
 
   const inspector = new HttpInspectorInboundMiddleware(
-    ignoreRoutes.map((x) => new RegExp(`^${x.replace('*', '.+')}$`, 'i')),
+    ignoreRoutes.map(routeToRegex),
   );
   const middleware = inspector.use.bind(inspector);
 

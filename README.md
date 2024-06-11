@@ -38,7 +38,8 @@ import { AppService } from './app.service';
         obfuscation: { sensitiveKeys: ['cardnumber'] },
       },
       httpTrafficInspection: {
-        ignoreRoutes: ['/v1/hidden-paths/*', '/v1/health'],
+        ignoredInboundRoutes: ['/v1/hidden-paths/*', '/v1/health'],
+        allowedOutboundRoutes: ['/v1/inpected-outbound-routes/*'],
       },
     }),
   ],
@@ -178,7 +179,7 @@ Configuring specific routes to be excluded from inspection is particularly usefu
 - CORS
 - API Versioning
 - Route Prefixing
-- Traced Metadata in logs
+- Logged Metadata in logs
 
 ## License
 

@@ -9,7 +9,7 @@ import { config, format, transports } from 'winston';
 import { MODULE_OPTIONS_TOKEN } from '../common-config.builder';
 import { CommonConfigModuleOptions } from '../common-config.options';
 import { configureOutboundHttpCorrelationPropagation } from './http-correlation.propagator';
-import { configureMetadataInterceptor } from './metadata.interceptor';
+import { configureMetadataInterceptor } from './logged-metadata.interceptor';
 import { Obfuscator, RegExpObfuscator } from './obfuscator';
 
 let contextService: ContextService;
@@ -52,7 +52,7 @@ const metadata = () =>
   format((info) => {
     const meta =
       contextService.get<{ name: string; value: string }[]>(
-        '__TracedMetadata__',
+        '__LoggedMetadata__',
       ) ?? [];
     const values = meta.reduce(
       (acc, { name, value }) => ({ ...acc, [name]: value }),

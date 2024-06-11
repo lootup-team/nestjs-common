@@ -5,9 +5,9 @@ export * from './common-config.options';
 export * from './logger/exception.handler';
 export * from './logger/http-inspector-inbound.middleware';
 export * from './logger/http-inspector-outbound.interceptor';
+export * from './logger/logged-metadata.decorator';
 export * from './logger/logger.config';
 export * from './logger/obfuscator';
-export * from './logger/traced-metadata.decorator';
 
 export * from './utils/compression.config';
 export * from './utils/cors.config';

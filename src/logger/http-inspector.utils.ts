@@ -1,6 +1,9 @@
 import { Logger } from '@nestjs/common';
 import http from 'http';
 
+export const routeToRegex = (x: string) =>
+  new RegExp(`^${x.replace('*', '.+')}$`, 'i');
+
 export function parseSearchString(searchString?: string) {
   if (!searchString) {
     return [];
