@@ -1,4 +1,4 @@
-import { ContextService } from '@gedai/nestjs-core';
+import { ContextService } from '@lootupteam/nestjs-core';
 import { INestApplication, Logger } from '@nestjs/common';
 import * as http from 'http';
 import * as https from 'https';

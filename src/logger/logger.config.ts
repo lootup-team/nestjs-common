@@ -1,4 +1,4 @@
-import { Context, ContextService } from '@gedai/nestjs-core';
+import { Context, ContextService } from '@lootupteam/nestjs-core';
 import { INestApplication, Logger } from '@nestjs/common';
 import {
   WinstonModule,
@@ -22,7 +22,7 @@ const { combine, timestamp, json } = format;
 const { nestLike } = nestWinstonUtils.format;
 
 const correlate = format((info) => {
-  const context: Context = info.error?.context ?? contextService.getContext();
+  const context: Context = info.error?.["context"] ?? contextService.getContext();
   const contextId = context.getId();
   const correlationId = context.getCorrelationId();
   return { ...info, contextId, correlationId };
@@ -67,13 +67,13 @@ const treatError = format(({ stack: _stack, error, ...info }) => {
     return info;
   }
 
-  const { innerException } = error;
+  const innerException = error?.["innerException"];
   const exception = innerException ? { innerException } : {};
   return {
     ...info,
     error: {
-      message: error.message,
-      stack: error.stack,
+      message: error?.["message"],
+      stack: error?.["stack"],
       ...exception,
     },
   };

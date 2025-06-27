@@ -1,4 +1,4 @@
-import { configureContextWrappers } from '@gedai/nestjs-core';
+import { configureContextWrappers } from '@lootupteam/nestjs-core';
 import { NestApplicationOptions } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { configureExceptionHandler } from './logger/exception.handler';
