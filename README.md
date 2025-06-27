@@ -1,6 +1,6 @@
 ## Description
 
-This package serves as a fundamental configuration utility for NestJS services, providing essential settings and dependencies to streamline development processes. It relies on `@gedai/nestjs-core` as a key dependency for keeping track of contexts. To ensure smooth operation, it's imperative to install and configure this dependency to ensure smooth operation.
+This package serves as a fundamental configuration utility for NestJS services, providing essential settings and dependencies to streamline development processes. It relies on `@lootupteam/nestjs-core` as a key dependency for keeping track of contexts. To ensure smooth operation, it's imperative to install and configure this dependency to ensure smooth operation.
 
 ## Getting Started
 
@@ -9,7 +9,7 @@ This package serves as a fundamental configuration utility for NestJS services, 
 Install the necessary packages with your favorite Package Manager.
 
 ```bash
-$ npm install @gedai/nestjs-core
+$ npm install @lootupteam/nestjs-common
 ```
 
 ### Step 2: Configuration Setup
@@ -18,8 +18,8 @@ In your `app.module.ts` file, import the required modules and configure them:
 
 ```typescript
 // app.module.ts
-import { CommonConfigModule } from '@gedai/nestjs-common';
-import { ContextModule } from '@gedai/nestjs-core';
+import { CommonConfigModule } from '@lootupteam/nestjs-common';
+import { ContextModule } from '@lootupteam/nestjs-core';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -55,7 +55,7 @@ In your `main.ts` file, configure the application with the unified configuration
 
 ```typescript
 // main.ts using the unified handler
-import { createNestApp } from '@gedai/nestjs-common';
+import { createNestApp } from '@lootupteam/nestjs-common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -69,7 +69,7 @@ Or, if you prefer, manually setting various common settings:
 
 ```typescript
 // main.ts manually
-import { configureContextWrappers } from '@gedai/nestjs-core';
+import { configureContextWrappers } from '@lootupteam/nestjs-core';
 import {
   configureCORS,
   configureCompression,
@@ -81,7 +81,7 @@ import {
   configureRoutePrefix,
   configureValidation,
   configureVersioning,
-} from '@gedai/nestjs-common';
+} from '@lootupteam/nestjs-common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -115,7 +115,7 @@ With the setup complete, utilize Nest's default logger anywhere in your applicat
 
 ```typescript
 // app.service.ts
-import { ContextService } from '@gedai/nestjs-core';
+import { ContextService } from '@lootupteam/nestjs-core';
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
@@ -183,4 +183,4 @@ Configuring specific routes to be excluded from inspection is particularly usefu
 
 ## License
 
-Gedai is [MIT licensed](LICENSE).
+@lootupteam/nestjs-common is [MIT licensed](LICENSE).
