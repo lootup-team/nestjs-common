@@ -2,6 +2,9 @@
 
 This package serves as a fundamental configuration utility for NestJS services, providing essential settings and dependencies to streamline development processes. It relies on `@lootupteam/nestjs-core` as a key dependency for keeping track of contexts. To ensure smooth operation, it's imperative to install and configure this dependency to ensure smooth operation.
 
+## Why was this fork created?
+This package was originally developed by [gedai](https://github.com/gedai-dev), however he stopped maintaining it and so this fork was created. This repo may have improvements/changes in the future.
+
 ## Getting Started
 
 ### Step 1: Installation
