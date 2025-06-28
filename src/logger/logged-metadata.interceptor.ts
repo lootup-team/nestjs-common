@@ -35,6 +35,9 @@ export const configureMetadataInterceptor = (app: INestApplication) => {
   const interceptor = new LoggedMetadataInterceptor(reflector, context);
   app.useGlobalInterceptors(interceptor);
 
-  Logger.log('Logged metadata interceptor initialized', '@gedai/common/config');
+  Logger.log(
+    'Logged metadata interceptor initialized',
+    '@lootupteam/nestjs-common',
+  );
   return app;
 };

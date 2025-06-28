@@ -98,7 +98,7 @@ export const configureHttpInspectorInbound = (app: INestApplication) => {
         message: 'Inbound HTTP Inspection is set to ignore routes',
         routes: ignoreRoutes,
       },
-      '@gedai/common/config',
+      '@lootupteam/nestjs-common',
     );
   }
 
@@ -111,6 +111,9 @@ export const configureHttpInspectorInbound = (app: INestApplication) => {
     value: HttpInspectorInboundMiddleware.name,
   });
   app.use(middleware);
-  Logger.log('Inbound http inspection initialized', '@gedai/common/config');
+  Logger.log(
+    'Inbound http inspection initialized',
+    '@lootupteam/nestjs-common',
+  );
   return app;
 };

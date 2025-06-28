@@ -8,7 +8,7 @@ export const configureRoutePrefix = (app: INestApplication) => {
 
   if (prefix) {
     app.setGlobalPrefix(prefix);
-    Logger.log('Route Prefixes Initialized', '@gedai/common/config');
+    Logger.log('Route Prefixes Initialized', '@lootupteam/nestjs-common');
   }
   return app;
 };

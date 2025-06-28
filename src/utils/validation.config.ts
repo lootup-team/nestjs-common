@@ -14,6 +14,6 @@ export const configureValidation = (app: INestApplication) => {
       },
     ),
   );
-  Logger.log('Validation initialized', '@gedai/common/config');
+  Logger.log('Validation initialized', '@lootupteam/nestjs-common');
   return app;
 };

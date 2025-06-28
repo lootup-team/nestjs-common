@@ -68,7 +68,7 @@ export const configureOutboundHttpCorrelationPropagation = (
   }
   Logger.log(
     'Http Correlation Propagation initialized',
-    '@gedai/common/config',
+    '@lootupteam/nestjs-common',
   );
   return app;
 };

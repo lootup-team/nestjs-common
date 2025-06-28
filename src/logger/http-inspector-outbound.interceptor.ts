@@ -113,14 +113,17 @@ export const configureHttpInspectorOutbound = (app: INestApplication) => {
   for (const module of [http, https]) {
     mountInterceptor(logger, module, allowedOutboundRoutes.map(routeToRegex));
   }
-  logger.log('Outbound http inspection initialized', '@gedai/common/config');
+  logger.log(
+    'Outbound http inspection initialized',
+    '@lootupteam/nestjs-common',
+  );
   if (allowedOutboundRoutes) {
     Logger.log(
       {
         message: 'Outbound HTTP Inspection is set to inspect routes',
         routes: allowedOutboundRoutes,
       },
-      '@gedai/common/config',
+      '@lootupteam/nestjs-common',
     );
   }
   return app;

@@ -139,6 +139,6 @@ export const configureLogger = (app: INestApplication) => {
   app.useLogger(logger);
   configureMetadataInterceptor(app);
   configureOutboundHttpCorrelationPropagation(app);
-  Logger.log('Logger initialized', '@gedai/common/config');
+  Logger.log('Logger initialized', '@lootupteam/nestjs-common');
   return app;
 };

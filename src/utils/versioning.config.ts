@@ -6,6 +6,6 @@ export const configureVersioning = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
 
   app.enableVersioning(options.versioning ?? { type: VersioningType.URI });
-  Logger.log('API Versioning initialized', '@gedai/common/config');
+  Logger.log('API Versioning initialized', '@lootupteam/nestjs-common');
   return app;
 };

@@ -5,6 +5,6 @@ import { CommonConfigModuleOptions } from '../common-config.options';
 export const configureCORS = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   app.enableCors(options.cors);
-  Logger.log('CORS initialized', '@gedai/common/config');
+  Logger.log('CORS initialized', '@lootupteam/nestjs-common');
   return app;
 };

@@ -70,6 +70,6 @@ class CustomExceptionHandler implements NestInterceptor {
 export const configureExceptionHandler = (app: INestApplication) => {
   const contextService = app.get(ContextService);
   app.useGlobalInterceptors(new CustomExceptionHandler(contextService));
-  Logger.log('Exceptions handler initialized', '@gedai/common/config');
+  Logger.log('Exceptions handler initialized', '@lootupteam/nestjs-common');
   return app;
 };

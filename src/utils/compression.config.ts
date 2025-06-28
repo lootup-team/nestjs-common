@@ -6,6 +6,6 @@ import { CommonConfigModuleOptions } from '../common-config.options';
 export const configureCompression = (app: INestApplication) => {
   const options = app.get<CommonConfigModuleOptions>(MODULE_OPTIONS_TOKEN);
   app.use(compression(options.compression));
-  Logger.log('Compression initialized', '@gedai/common/config');
+  Logger.log('Compression initialized', '@lootupteam/nestjs-common');
   return app;
 };
